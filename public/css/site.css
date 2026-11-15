@@ -57,6 +57,14 @@ h4{font-size:15px;font-weight:500;color:var(--teal)}
 .lang,.menu{font-size:16px;font-weight:500;color:var(--teal);background:none;border:0;cursor:pointer;padding:8px}
 .menu{display:none}
 
+/* sub pages: the first section carries the page h1 */
+.pg{padding-top:72px}
+.pg h1{font-size:clamp(36px,4.6vw,60px);letter-spacing:-0.03em;line-height:1.08}
+.mission h1{color:var(--vellum)} .bg-root h1 i{color:var(--thread)}
+.next{padding:80px 0} .next .head{margin-bottom:28px}
+.more{margin-top:28px}
+a.run{text-decoration:none;display:inline-block}
+
 /* hero */
 .hero{padding:80px 0 88px}
 .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:center}
@@ -191,6 +199,7 @@ form,.done{background:var(--vellum);border-radius:20px;padding:32px;display:flex
 footer{background:var(--root);color:var(--pale);padding:40px 0;font-size:14px}
 footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:center}
 footer .tl{font-size:20px;color:var(--vellum)} footer .tl i{color:var(--thread)}
+.flinks{display:flex;flex-wrap:wrap;gap:8px 22px} .flinks a{color:var(--pale);text-decoration:none;font-size:15px} .flinks a:hover{color:var(--vellum)}
 
 @media (max-width:960px){
   .hero .wrap,.fit,.cost,.pilot{grid-template-columns:1fr}

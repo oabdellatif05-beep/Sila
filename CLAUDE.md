@@ -15,16 +15,32 @@ Public site for **Sila** (Arabic **صلة**), a project expert for construction 
 
 ## Files
 
+The site is several static pages. Cloudflare serves `about.html` at `/about`; links between pages use the `.html` name (Cloudflare redirects to the clean URL, and the files also work when opened locally).
+
+| Page | Sections |
+|---|---|
+| `public/index.html` | Home: hero with rotating demo peek, four functions (Verify, Watch, Ask, Build), why it matters + calculator, pilot call to action |
+| `public/product.html` | How it works: fit diagram and is / is not, nine capabilities, beyond answers |
+| `public/demo.html` | Try it: demo console. `demo.html#<id>` opens a scenario (ids in `demo-data.js`) |
+| `public/who.html` | Who uses it: role cards that link into the demo |
+| `public/trust.html` | Trust cards and FAQ |
+| `public/pilot.html` | Pilot steps and request form |
+| `public/about.html` | Mission band |
+| `public/404.html` | Not found page (served by Cloudflare for unknown paths) |
+
 | File | Holds | Edit for |
 |---|---|---|
-| `public/index.html` | Page structure and all **English** copy (elements with `data-k="key"`) | English wording, new sections |
-| `public/js/i18n-ar.js` | `AR` dictionary: Arabic for every `data-k` key | Arabic wording; add a key whenever you add English copy |
-| `public/js/demo-data.js` | `DEMO` questions/answers/traces, `ROLES`, `HERO` | Demo console content (each text is an `[en, ar]` pair) |
-| `public/js/site.js` | Behaviour: console, hero rotation, calculator, form, nav, pattern, language switch | Logic only |
+| `public/*.html` | Structure and all **English** copy (elements with `data-k="key"`) | English wording, new sections |
+| `public/js/i18n-ar.js` | `AR` dictionary: Arabic for every `data-k` key on every page | Arabic wording; add a key whenever you add English copy |
+| `public/js/demo-data.js` | `DEMO` questions/answers/traces, `ROLES`, `HERO` | Demo content (each text is an `[en, ar]` pair). Loaded only by index, demo and who |
+| `public/js/site.js` | Behaviour shared by all pages; each block runs only if its elements exist | Logic only |
 | `public/css/site.css` | All styles and tokens | Look and layout |
-| `wrangler.jsonc` | Cloudflare config (Worker name `sila`, serves `./public`) | Rarely; the name must stay `sila` |
+| `wrangler.jsonc` | Cloudflare config (Worker name `sila`, serves `./public`, 404 page) | Rarely; the name must stay `sila` |
 
-Open only the file a change needs. For copy changes, `index.html` + `i18n-ar.js` are usually enough.
+- The nav, footer, `<head>` and icon sprite are repeated in every page. A change to any of them must be made in all eight files. The current page's nav link carries `class="on" aria-current="page"`.
+- On a sub page the first section has class `pg` and holds the page's only `h1`; other headings are `h2`. Each page title has a `tt*` key so it switches language too.
+- The "Start with one project" band (class `next`) ends most pages; keep its background different from the section above it.
+- Open only the files a change needs. For copy changes, the page's `.html` + `i18n-ar.js` are usually enough.
 
 ## Design rules (keep the same language)
 
@@ -48,6 +64,6 @@ Open only the file a change needs. For copy changes, `index.html` + `i18n-ar.js`
 ## Checking and shipping
 
 - Small copy change: edit, push to `main`, done.
-- Layout or new section: render once in Chromium (Playwright) at 1440px, in Arabic, and at 390px (scrollWidth must equal 390), then push.
+- Layout, new section or new page: render each affected page once in Chromium (Playwright) at 1440px, in Arabic, and at 390px (scrollWidth must equal 390), then push.
 - Bigger or client-facing changes: push to a branch, share the preview, merge to `main` after approval.
 - Commit as the user's GitHub identity; keep commit messages short and plain.

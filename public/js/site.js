@@ -1,5 +1,5 @@
-// Site behaviour: demo console, hero rotation, calculator, form, nav, chain pattern, language switch.
-// Loads after demo-data.js and i18n-ar.js.
+// Site behaviour for every page: demo console, hero rotation, role cards, calculator, form, nav, chain pattern, language switch.
+// Each block runs only if its elements are on the page. Pages that use DEMO/ROLES/HERO load demo-data.js first.
 let lang = 'en';
 const L = x => Array.isArray(x) ? x[lang === 'ar' ? 1 : 0] : x;
 const $ = id => document.getElementById(id);
@@ -8,8 +8,10 @@ const FN = {verify:['Verify','تحقّق'], watch:['Watch','راقب'], ask:['As
 const FNAR = {verify:'تحقّق', watch:'راقب', ask:'اسأل', build:'ابنِ'};
 
 let current = 'pour', timer = null;
+const hasDemo = typeof DEMO !== 'undefined';
 const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 const find = id => DEMO.find(d => d.id === id);
+const fromHash = () => { const id = decodeURIComponent(location.hash.slice(1)); return hasDemo && find(id) ? id : null; };
 
 function renderList(){
   let h = '<select class="qsel" id="qsel" aria-label="Question">';
@@ -45,15 +47,18 @@ function show(id, instant){
   $('panel').innerHTML = top + '<div class="typing" aria-hidden="true"><i></i><i></i><i></i></div>';
   timer = setTimeout(() => { $('panel').innerHTML = top + answerHTML(d); }, 650);
 }
+if ($('qlist')) {
 $('qlist').addEventListener('click', e => { const b = e.target.closest('.qbtn'); if (b) show(b.dataset.id); });
 $('qlist').addEventListener('change', e => { if (e.target.id === 'qsel') show(e.target.value); });
+current = fromHash() || current;
+window.addEventListener('hashchange', () => { const id = fromHash(); if (id) { show(id, true); $('try').scrollIntoView(); } });
 $('panel').addEventListener('click', e => { if (e.target.id === 'tracebtn') { const t = $('trace'); t.hidden = !t.hidden; e.target.setAttribute('aria-expanded', String(!t.hidden)); e.target.textContent = t.hidden ? L(['Show the trace','اعرض مسار الجواب']) : L(['Hide the trace','أخفِ مسار الجواب']); } });
+}
 
 function renderRoles(){
-  $('roles').innerHTML = ROLES.map(r => `<div class="card"><h3>${esc(L(r[0]))}</h3><p class="ask">${esc(L(r[1]))}</p><button type="button" class="run" data-id="${r[2]}">${L(['Run this question','شغّل هذا السؤال'])} →</button></div>`).join('') +
+  $('roles').innerHTML = ROLES.map(r => `<div class="card"><h3>${esc(L(r[0]))}</h3><p class="ask">${esc(L(r[1]))}</p><a class="run" href="demo.html#${r[2]}">${L(['Run this question →','شغّل هذا السؤال ←'])}</a></div>`).join('') +
     `<p class="note" style="grid-column:1/-1;font-size:16px">${esc(L(ALSO[0]))}</p>`;
 }
-$('roles').addEventListener('click', e => { const b = e.target.closest('.run'); if (!b) return; show(b.dataset.id, true); $('try').scrollIntoView(); });
 
 // hero peek
 let hi = 0, htimer = null;
@@ -63,15 +68,18 @@ function peek(i){
   $('pk-s').textContent = L(['Sources: ','المصادر: ']) + d.rows.length + L([' records, each one linked',' سجلات، كل منها مرتبط']);
   $('pk-dots').innerHTML = HERO.map((_, k) => `<button type="button" class="${k===i?'on':''}" data-i="${k}" aria-label="Example ${k+1}"></button>`).join('');
 }
+if ($('pk-dots')) {
 $('pk-dots').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { clearInterval(htimer); peek(+b.dataset.i); } });
 if (!matchMedia('(prefers-reduced-motion: reduce)').matches) htimer = setInterval(() => peek((hi + 1) % HERO.length), 5000);
+}
 
 // calculator
 function calc(){ const n = +$('staff').value; $('staffv').textContent = n; $('hw').textContent = Math.round(n * 5.5).toLocaleString('en'); $('hy').textContent = Math.round(n * 5.5 * 50).toLocaleString('en'); }
-$('staff').addEventListener('input', calc);
+if ($('staff')) $('staff').addEventListener('input', calc);
 
 // form
 const mailOK = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+if ($('form')) {
 $('form').addEventListener('submit', e => {
   e.preventDefault();
   const v = {name:$('f-name').value.trim(), co:$('f-co').value.trim(), mail:$('f-mail').value.trim(), q:$('f-q').value.trim()};
@@ -84,17 +92,15 @@ $('form').addEventListener('submit', e => {
 });
 $('again').addEventListener('click', () => { $('done').style.display = 'none'; $('form').style.display = 'flex'; });
 $('copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText($('summary').textContent); $('copy').textContent = L(['Copied','تم النسخ']); } catch (err) { $('copy').textContent = L(['Select the text to copy','حدّد النص لنسخه']); } });
+}
 
 // nav
 $('menu').addEventListener('click', () => { const o = $('links').classList.toggle('open'); $('menu').setAttribute('aria-expanded', String(o)); });
 $('links').addEventListener('click', () => $('links').classList.remove('open'));
-if ('IntersectionObserver' in window) {
-  const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) document.querySelectorAll('.links a').forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + en.target.id)); }), {rootMargin:'-40% 0px -55% 0px'});
-  ['fit','try','who','trust','pilot'].forEach(id => io.observe($(id)));
-}
 
 // pattern
 function drawPattern(){
+  if (!$('pattern')) return;
   const c = $('pattern'), r = c.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
   c.width = r.width * dpr; c.height = r.height * dpr;
   const g = c.getContext('2d'); g.scale(dpr, dpr);
@@ -115,8 +121,12 @@ function setLang(l){
   $('langlabel').textContent = l === 'ar' ? 'English' : 'عربي';
   $('langlabel').style.fontFamily = l === 'ar' ? 'var(--latin)' : 'var(--arabic)';
   try { localStorage.setItem('sila-lang', l); } catch (e) {}
-  renderList(); show(current, true); renderRoles(); peek(hi); drawPattern();
+  if ($('qlist')) { renderList(); show(current, true); }
+  if ($('roles')) renderRoles();
+  if ($('pk-dots')) peek(hi);
+  drawPattern();
 }
 $('lang').addEventListener('click', () => setLang(lang === 'ar' ? 'en' : 'ar'));
 let saved = 'en'; try { saved = localStorage.getItem('sila-lang') || 'en'; } catch (e) {}
-calc(); setLang(saved);
+if ($('staff')) calc();
+setLang(saved);
