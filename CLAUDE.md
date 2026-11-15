@@ -9,6 +9,7 @@ Public site for **Sila** (Arabic **صلة**), a project expert for construction 
 - It does not replace the document controller or engineers. Read-only: never edits, moves or deletes files.
 - Four functions: **Verify** and **Watch** lead; **Ask** and **Build** follow.
 - Primary buyers: owners, MDs and project directors at small and mid-sized GCC contractors with records spread over many systems. Secondary: claims and disputes consultants. Next: MEP and specialist subcontractors. Users: site engineers, document control, QA/QC, PMs, MEP coordinators, QS/contracts, planners.
+- Site copy speaks to main contractors and subcontractors of any size, on any project type, plus claims consultants. Do not widen it to developers, design consultants or PMCs. Avoid wording that assumes a villa project or a main-contractor viewpoint ("plot", "villa", "call the subcontractor").
 - Tagline: "Every answer, *traced.*" / «لكل جواب مصدر». Write "Sila" in text (never SILA or Sulala); the wordmark is lowercase `sila`.
 - Keep internal terms off the site: genie, semantic layer, Part E, expert model, prompt.
 
@@ -36,7 +37,7 @@ Open only the file a change needs. For copy changes, `index.html` + `i18n-ar.js`
 ## Honesty rules
 
 - Every figure carries its source and year. No invented customers, logos, testimonials or results.
-- Demo answers are scripted and labelled illustrative. Placeholders stay visible (`[to confirm]`).
+- Demo answers are scripted and labelled illustrative. The demo mixes sample project types (tower, hospital, villa community, fit-out, roads) through each scenario's `proj` field; the questions are modelled on site questions, so never call them real or anonymised. Placeholders stay visible (`[to confirm]`).
 - Open items: hosting region (FAQ), live vs planned connectors, form backend (form currently shows a copy-able request and says nothing was sent; never fake a send), native Arabic check of trade terms, real domain.
 
 ## Bilingual

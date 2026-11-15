@@ -17,7 +17,7 @@ function renderList(){
   h += '</select>';
   ['verify','watch','ask','build'].forEach(fn => {
     h += `<h4><span>${L(FN[fn])}</span><span>${FNAR[fn]}</span></h4>`;
-    DEMO.filter(d => d.fn === fn).forEach(d => h += `<button type="button" class="qbtn${d.id===current?' on':''}" data-id="${d.id}"><span>${esc(L(d.q))}</span><small>${esc(L(d.role))}</small></button>`);
+    DEMO.filter(d => d.fn === fn).forEach(d => h += `<button type="button" class="qbtn${d.id===current?' on':''}" data-id="${d.id}"><span>${esc(L(d.q))}</span><small>${esc(L(d.role))} · ${esc(L(d.proj))}</small></button>`);
   });
   $('qlist').innerHTML = h;
 }
@@ -39,7 +39,7 @@ function show(id, instant){
   current = id; const d = find(id); clearTimeout(timer);
   document.querySelectorAll('.qbtn').forEach(b => b.classList.toggle('on', b.dataset.id === id));
   const s = $('qsel'); if (s) s.value = id;
-  const top = `<p class="role">${esc(L(FN[d.fn]))} · ${esc(L(d.role))}</p><p class="bubble">${esc(L(d.q))}</p>`;
+  const top = `<p class="role">${esc(L(FN[d.fn]))} · ${esc(L(d.role))} · ${esc(L(d.proj))}</p><p class="bubble">${esc(L(d.q))}</p>`;
   const still = instant || matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (still) { $('panel').innerHTML = top + answerHTML(d); return; }
   $('panel').innerHTML = top + '<div class="typing" aria-hidden="true"><i></i><i></i><i></i></div>';
@@ -59,7 +59,7 @@ $('roles').addEventListener('click', e => { const b = e.target.closest('.run'); 
 let hi = 0, htimer = null;
 function peek(i){
   hi = i; const d = find(HERO[i]);
-  $('pk-who').textContent = L(d.role); $('pk-q').textContent = L(d.q); $('pk-a').textContent = L(d.a);
+  $('pk-who').textContent = L(d.role) + ' · ' + L(d.proj); $('pk-q').textContent = L(d.q); $('pk-a').textContent = L(d.a);
   $('pk-s').textContent = L(['Sources: ','المصادر: ']) + d.rows.length + L([' records, each one linked',' سجلات، كل منها مرتبط']);
   $('pk-dots').innerHTML = HERO.map((_, k) => `<button type="button" class="${k===i?'on':''}" data-i="${k}" aria-label="Example ${k+1}"></button>`).join('');
 }
